@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cyrose Wedding Invitation</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    .slideshow-container {
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .slide {
+      display: none;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    .slide.active {
+      display: block;
+      opacity: 1;
+      z-index: 1;
+    }
+    .arrow {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      font-size: 30px;
+      z-index: 10;
+      user-select: none;
+    }
+    .arrow:hover {
+      background-color: rgba(255,255,255,0.8);
+    }
+    .prev { left: 10px; }
+    .next { right: 10px; }
+    audio { display: none; }
+  </style>
+</head>
+<body>
+  <div class="slideshow-container">
+    <img class="slide active" src="images/page1.jpg" alt="Page 1">
+    <img class="slide" src="images/page2.jpg" alt="Page 2">
+    <img class="slide" src="images/page3.jpg" alt="Page 3">
+    <img class="slide" src="images/page4.jpg" alt="Page 4">
+    <div class="arrow prev">&#10094;</div>
+    <div class="arrow next">&#10095;</div>
+  </div>
+
+  <audio id="bg-music" autoplay loop>
+    <source src="audio/cyroseinvitatio.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const prev = document.querySelector('.prev');
+    const next = document.querySelector('.next');
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+      });
+      slides[index].classList.add('active');
+    }
+
+    function nextSlide() {
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlide(slideIndex);
+    }
+
+    function prevSlide() {
+      slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+      showSlide(slideIndex);
+    }
+
+    next.addEventListener('click', nextSlide);
+    prev.addEventListener('click', prevSlide);
+
+    // Swipe support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    document.addEventListener('touchend', (e) => {
+      let touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) nextSlide();
+      if (touchStartX - touchEndX < -50) prevSlide();
+    });
+
+    // Attempt autoplay fix on mobile (user interaction)
+    document.addEventListener('click', () => {
+      const music = document.getElementById('bg-music');
+      if (music && music.paused) {
+        music.play().catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>
